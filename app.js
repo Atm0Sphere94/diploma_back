@@ -5,12 +5,8 @@ const helmet = require('helmet');
 
 const app = express();
 
-<<<<<<< HEAD
 const { PORT } = require('./config');
 const { connectDB } = require('./connectdb');
-=======
-const { PORT, connectDB } = require('./config');
->>>>>>> stage-1
 const routeAll = require('./routes/routes');
 const { createUser, login } = require('./controllers/users');
 
