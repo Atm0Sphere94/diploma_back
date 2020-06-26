@@ -16,7 +16,7 @@ const getAllSavedArticles = (async (req, res, next) => {
   }
 });
 
-// POST /articles — создаёт карточку
+// POST /articles — создаёт статью
 const postArticle = (async (req, res, next) => {
   try {
     const {
@@ -55,7 +55,7 @@ const deleteArticle = (async (req, res, next) => {
     const {
       id,
     } = req.params;
-    const article = await Article.findById(id);
+    const article = await Article.findById(id).populate('owner');
     if (!article) {
       return next(new NotFoundError('Not Found')); // здесь проверка, не удалена ли уже карточка
     }
@@ -65,7 +65,7 @@ const deleteArticle = (async (req, res, next) => {
     const articleToDelete = await Article.findByIdAndRemove(id);
     return res.status(200).send({
       message: 'card deleted:',
-      data: articleToDelete,
+      data: articleToDelete._id,
     });
   } catch (err) {
     if (err instanceof mongoose.CastError) {

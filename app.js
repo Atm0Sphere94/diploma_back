@@ -13,15 +13,16 @@ const { createUser, login } = require('./controllers/users');
 const errorHandler = require('./errors/errorHandler');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-
+const { rateLimit } = require('./middlewares/rateLimiter');
 
 connectDB();
-app.use(helmet());
 
+app.use(cookies());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookies());
 app.use(requestLogger);
+app.use(rateLimit);
+app.use(helmet());
 
 // crash-test проверка работы pm2
 app.get('/crash-test', () => {
