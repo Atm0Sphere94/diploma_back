@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookies = require('cookie-parser');
 const helmet = require('helmet');
+const { limiter } = require('./middlewares/rateLimiter');
 
 const app = express();
 
@@ -13,7 +14,6 @@ const { createUser, login } = require('./controllers/users');
 const errorHandler = require('./errors/errorHandler');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const { rateLimit } = require('./middlewares/rateLimiter');
 
 connectDB();
 
@@ -21,9 +21,8 @@ app.use(cookies());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger);
-app.use(rateLimit);
 app.use(helmet());
-
+app.use(limiter);
 // crash-test проверка работы pm2
 app.get('/crash-test', () => {
   setTimeout(() => {

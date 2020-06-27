@@ -26,7 +26,7 @@ const getUser = (async (req, res, next) => {
   }
 });
 
-// POST /signin - Создание пользователя
+// POST /signup - Создание пользователя
 const createUser = (async (req, res, next) => {
   try {
     const {
