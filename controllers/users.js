@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
@@ -8,24 +7,16 @@ const BadRequestError = require('../errors/badRequestError');
 const ConflictError = require('../errors/conflictError');
 
 const { JWT_SECRET } = require('../config');
-
 // GET /users/me - возвращает пользователя по _id
 const getUser = (async (req, res, next) => {
   try {
-    if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-      const user = await User.findById(req.params.id);
-      if (!user) {
-        throw new NotFoundError('Нет пользователя с таким ID');
-      }
-      res.status(200).send({ data: user });
-    } else {
-      throw (new BadRequestError('This id is not valid'));
-    }
+    const user = await User.findById(req.user._id)
+      .orFail(() => new NotFoundError('Not found this ID'));
+    return res.send(user);
   } catch (err) {
-    next(err);
+    return next(err);
   }
 });
-
 // POST /signup - Создание пользователя
 const createUser = (async (req, res, next) => {
   try {
