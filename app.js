@@ -2,7 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookies = require('cookie-parser');
 const helmet = require('helmet');
+const cors = require('cors');
 const { limiter } = require('./middlewares/rateLimiter');
+
 
 const app = express();
 
@@ -22,6 +24,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger);
 app.use(helmet());
+const corsOptions = {
+  origin: ['http://a1mosandbox.ru', 'https://a1mosandbox.ru'],
+  methods: 'GET, POST, PUT, DELETE, PATCH, HEAD',
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+};
+app.use('*', cors(corsOptions));
 app.use(limiter);
 // crash-test проверка работы pm2
 app.get('/crash-test', () => {
